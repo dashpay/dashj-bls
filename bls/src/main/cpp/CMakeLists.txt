@@ -1,12 +1,10 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0 FATAL_ERROR)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE "RELEASE")
 ENDIF()
-
-project(BLS)
 
 # Add path for custom modules
 set(CMAKE_MODULE_PATH
@@ -31,8 +29,11 @@ set(CMAKE_MODULE_PATH
   set(ARITH "easy" CACHE STRING "")
 #endif()
 
-
-set(WSIZE 64 CACHE INTEGER "")
+if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+  set(WSIZE "32" CACHE STRING "Relic - Processor word size")
+else()
+  set(WSIZE "64" CACHE STRING "Relic - Processor word size")
+endif()
 set(TIMER "CYCLE" CACHE STRING "")
 set(CHECK "off" CACHE STRING "")
 set(VERBS "off" CACHE STRING "")
@@ -70,8 +71,10 @@ set(PP_METHD "LAZYR;OATEP" CACHE STRING "")
 add_subdirectory(bls-signatures/contrib/relic)
 #add_subdirectory(contrib/pybind11)
 IF ("${CMAKE_SYSTEM_NAME}" STREQUAL "Windows")
-include(bls-signatures-src-windows.cmake)
+  include(bls-signatures-src-windows.cmake)
+ELSEIF("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux" AND "${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "armv7l")
+  include(bls-signatures-src-armv7l.cmake)
 ELSE()
-add_subdirectory(bls-signatures/src)
+  add_subdirectory(bls-signatures/src)
 ENDIF()
 #add_subdirectory(python-bindings)

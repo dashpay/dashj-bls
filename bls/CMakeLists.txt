@@ -3,6 +3,7 @@
 #
 # requires that libbls.a has been built with the build-bls-signatures.sh script
 #
+project(BLS)
 cmake_minimum_required(VERSION 3.4.1)
 set(CMAKE_CXX_STANDARD 11)
 
